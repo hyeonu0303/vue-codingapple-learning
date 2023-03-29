@@ -3,11 +3,12 @@
     v-if="조건식" / 참일때만 보여줌
     모달창
   -->
-  <div class="black-bg" v-if="모달창열렸니 == true" >
+  <div class="black-bg" v-if="modal_check == true" >
     <div class="white-bg">
-      <h4>상세페이지임</h4>
-      <p>상세페이지내용</p>
-      <button v-on:click="모달창열렸니 = false">닫기</button>
+      <h4>{{ oneroom[누른거].title }}</h4>
+      <p>{{oneroom[누른거].content}}</p>
+      <p>가격:{{ oneroom[누른거].price }}</p>
+      <button v-on:click="modal_check = false">닫기</button>
     </div>
   </div>
 
@@ -32,38 +33,43 @@
       <a v-for="작명 in menu" :key="작명">{{ 작명 }}</a>
     </div>
 
-    <div v-for="(oneroom,i) in products" :key="i">
-      <img src="./assets/room0.jpg" class="room-img">
-      <h4 v-on:click="모달창열렸니 = true">{{ oneroom }}</h4>
-      <p>{{price[i]}}만원</p>
-      <button v-on:click="신고수[i]++">허위매물신고</button>
-      <span>신고수: {{ 신고수[i] }}</span>
+    <div v-for="(a,i) in oneroom" :key="i">
+      <h4 @click="modal_check=true; 누른거 = i">{{ oneroom[i].title }}</h4>
+      <img :src="a.image">
+      <p>{{ a.content }}</p>
+      <p>가격: {{ a.price }}</p>
     </div>
-    
-    
-  
 </template>
 
 <script>
-
 /*
-암기
-{{데이터바인딩}} 하는 이유
-1.html 하드코딩하면 변경 힘들어서 하는거임(매일 변경되거나 그러기때문)
-2.vue의 실시간 자동 렌더링 쓰려고
-자주 변할거같은데이터들은 데이터로 보관하고 HTML에 꽂아넣기{{}}
-안바뀔거같은건 하드코딩 ㄱㄱ
+방법1 
+  import apple from './assets/oneroom.js';
+  apple;
+  console.log(apple); 
 */
+
+/* 
+방법2
+  import {apple, apple2} from './assets/oneroom.js';
+  apple;
+  apple2; 
+*/
+
+//상품데이터받아오기
+import products from './assets/oneroom.js'
+
 export default {
   name: 'App',
   //data보관함
   data(){
     return{
+      누른거: 0,
       menu: ['home','shop','about'],
       price: [50,60,70],
-      products :['역삼동원룸', '천호동원룸', '마포구원룸'],
+      oneroom: products,
       신고수: [0,0,0],
-      모달창열렸니 : false,
+      modal_check : false,
     }
   },
   
@@ -77,12 +83,17 @@ export default {
 
   }
 }
+
+
+
+
+
 </script>
 <!--
 -동적인 UI만드는법
   0.HTML CSS로 디자인해둔다
   1.UI의 현재 상태를 데이터로 저장해둔다
-  2.데이터에따라 UI가 어떻게 보일지 작성
+  2.데이터가변하면 HTML이 어떻게 보일지 작성
 -->
 <style>
 #app {
