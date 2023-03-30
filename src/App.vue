@@ -1,49 +1,35 @@
 <template>
-  <!--
-    v-if="조건식" / 참일때만 보여줌
-    모달창
-  -->
-  <div class="black-bg" v-if="modal_check == true" >
-    <div class="white-bg">
-      <h4>{{ oneroom[누른거].title }}</h4>
-      <p>{{oneroom[누른거].content}}</p>
-      <p>가격:{{ oneroom[누른거].price }}</p>
-      <button v-on:click="modal_check = false">닫기</button>
-    </div>
+  <!--모달창--> <!--작명="데이터이름" 데이터이름과 똑같이 쓰는게좋음-->
+  <!--부모도 쓰는데이터라면 부모컴포넌트에 만들어두기-->
+  <ModalTemplate 
+    :oneroom="oneroom" 
+    :clickCount="clickCount"
+    :modalCheck="modalCheck"
+    />
+  
+  <!--메뉴바-->
+  <div class="menu">
+    <a v-for="i in menu" :key="i">{{ i }}</a>
   </div>
 
-
-  <!--
-    ● 반복문
-    1.반복문은 v-for="작명 in 숫자or데이터" :key="오류났을때 볼 값"
-    2.<a v-for="작명 in menu" :key="작명">home</a>
-      여기서 데이터에서 반복시킬시 작명은 menu의 데이터가된다.
-    3.<a v-for="(a,i) in menu" :key="a">{{ a }}</a>
-      왼쪽변수는 array내의 데이터, 오른쪽변수는 1씩증가하는변수
-
-    ● :key="" 의용도
-    1.반복문쓸때 꼭 써야함
-    2.반복문돌린 요소를 컴퓨터가 구분하기 위해 씀
-
-    ※반복문은 같은태그 여러개일때 쓰면 좋음
-    ※데이터 어떻게 만들지 먼저 생각하는게 좋음
+  <!--할인배너(컴포넌트사용)
+  많이사용할것만 하는게 좋음 
   -->
-    <div class="menu">
-      <!-- <a v-for="작명 in 3" :key="작명">{{ products[작명] }}</a> -->
-      <a v-for="작명 in menu" :key="작명">{{ 작명 }}</a>
-    </div>
+  <Discount/>
 
-    <div v-for="(a,i) in oneroom" :key="i">
-      <h4 @click="modal_check=true; 누른거 = i">{{ oneroom[i].title }}</h4>
-      <img :src="a.image">
-      <p>{{ a.content }}</p>
-      <p>가격: {{ a.price }}</p>
-    </div>
+  <!--템플릿-->
+  <Card :oneroom="oneroom[i]" v-for="(작명,i) in oneroom" :key="작명"/>
+  <!-- <Card :oneroom="oneroom[1]"/>
+  <Card :oneroom="oneroom[2]"/>
+  <Card :oneroom="oneroom[3]"/>
+  <Card :oneroom="oneroom[4]"/>
+  <Card :oneroom="oneroom[5]"/> -->
+
 </template>
 
 <script>
 /*
-방법1 
+방법1
   import apple from './assets/oneroom.js';
   apple;
   console.log(apple); 
@@ -56,45 +42,43 @@
   apple2; 
 */
 
-//상품데이터받아오기
-import products from './assets/oneroom.js'
+import products from './assets/oneroom.js';
+import Discount from './components/Discount.vue';
+import ModalTemplate from './components/ModalTemplate.vue';
+import Card from './components/Card.vue';
 
 export default {
   name: 'App',
-  //data보관함
   data(){
     return{
-      누른거: 0,
+      object : {name:'kim', age:20},
+      clickCount: 0,
       menu: ['home','shop','about'],
       price: [50,60,70],
       oneroom: products,
-      신고수: [0,0,0],
-      modal_check : false,
+      modalCheck : false, 
     }
   },
   
-  //함수만드는공간
   methods : {
-    increase(){
-      this.신고수 += 1;
-    }
+    
   },
   components: {
-
+    Discount: Discount,
+    ModalTemplate: ModalTemplate,
+    Card : Card,
   }
 }
-
+/*
+반응형 웹 만드는법
+data추가하고 HTML을 조작한다.
+*/
 
 
 
 
 </script>
-<!--
--동적인 UI만드는법
-  0.HTML CSS로 디자인해둔다
-  1.UI의 현재 상태를 데이터로 저장해둔다
-  2.데이터가변하면 HTML이 어떻게 보일지 작성
--->
+
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -116,7 +100,6 @@ export default {
   width: 70%;
   margin-top: 40px;
 }
-/*모달창S */
 body {
   margin : 0;
 }
@@ -133,5 +116,10 @@ div {
   border-radius: 8px;
   padding: 20px;
 } 
-/*모달창E */
+.discount{
+  background: #eee;
+  padding: 10px;
+  margin:10px;
+  border-radius: 5px;
+}
 </style>
